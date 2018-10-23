@@ -150,8 +150,95 @@ function getAvailableLetter(){
 
 function findWordToUse(){
  //TODO Your job starts here.
-	alert("Your code needs to go here");	
+	//alert("Your code needs to go here");
+    var hands = new Array();
+    var points = new Array();
+    for (i = 0; i < YOUR_HAND.length; i++) {
+        hands[i] = YOUR_HAND[i].letter
+        points[i] = YOUR_HAND[i].pointsWhenLettersUsed
+    }
+
+    var arr7 = sort([0,1,2,3,4,5,6]);
+    var arr3 = sort([0,1,2]);
+
+    var res = ack(arr7,hands,points)
+
+    console.log(res)
+    alert("当前最高分数单词为：" + res + " 结果不唯一。")
+
 }
+
+// 排序7位单词
+function sort(num){
+
+	var permArr = [],
+		usedChars = [];
+	function main(num){
+		var i, ch;
+		for (i = 0; i < num.length; i++) {
+			ch = num.splice(i, 1)[0];
+			usedChars.push(ch);
+			if (num.length == 0) {
+				permArr.push(usedChars.slice());
+			}
+			main(num);
+            num.splice(i, 0, ch);
+			usedChars.pop();
+		}
+		return permArr
+	}
+
+	return main(num);
+
+}
+
+// 将索引替换为字母
+function ack(arrNum,hands,points) {
+	var ele = '';
+	var outEle = '';
+	var arr;
+	var point = 0;
+	var maxPoint = 0;
+    var maxEle = '';
+
+	// 单个字母时无意义
+	for (x = 0; x < 6 ; x++) {
+        for (m = 0; m < arrNum.length; m++) {
+            arr = arrNum[m]
+
+            for (n = 0; n < arr.length - x; n++) {
+                var ch = hands[arr[n]]
+                //匹配任意字母
+            	if (ch == '_'){
+            		for(var i = 0; i < 25; i++){
+						ch = String.fromCharCode((65 + i));
+					}
+				}
+				ele = ele + ch
+                outEle = outEle + ch
+                point = point + points[arr[n]]
+            }
+
+            if(isThisAWord(ele)){
+                if(point > maxPoint){
+                	maxPoint = point
+                    maxEle = outEle
+                }
+            	console.log(outEle + "    分数：" + maxPoint)
+
+            } else {
+                console.log("无有效单词")
+            }
+
+            ele = ''
+            outEle = ''
+            point = 0
+        }
+	}
+
+    return maxEle + "    分数：" + maxPoint;
+}
+
 function humanFindWordToUse(){
 	
 	 var humanFoundWord = $( "#human-word-input").val();
